@@ -18,7 +18,7 @@ class CustomerController extends Controller
     public function index(Request $request)
     {
         $user = $request -> user();
-        return CustomerResource::collection(Customer::all()->paginate());
+        return CustomerResource::collection(Customer::paginate());
     }
 
     /**
@@ -55,7 +55,7 @@ class CustomerController extends Controller
     public function update(UpdateCustomerRequest $request, Customer $customer)
     {
         $customer->update($request->validated());
-        return new CustomerResouce($customer);
+        return new CustomerResource($customer);
     }
 
     /**

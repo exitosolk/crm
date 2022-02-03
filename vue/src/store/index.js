@@ -1,16 +1,6 @@
 import {createStore} from "vuex";
 import axiosClient from '../axios'  
 
-const tmpCustomers = [{
-    id:300,
-    first_name:"Robert",
-    last_name:"Downey",
-    email_address:"robert@actor.com",
-    phone_number:"0775677890",
-    created_at:"",
-    updated_at:""
-}
-];
 
 const store = createStore({
     state: {
@@ -18,15 +8,36 @@ const store = createStore({
             data:{},
             token:sessionStorage.getItem('TOKEN'),
         },
-        customers:  [...tmpCustomers],
+        currentCustomer: {
+            loading: false,
+            data: {},
+        },
+        customers:  {
+            loading: false,
+            data:[]
+        },
     },
     getters: {},
     actions: {
+        getCustomer({commit}, id){
+            commit ("setCurrentCustomerLoading", true);
+            return axiosClient
+                .get(`/customer/${id}`)
+                .then((res) => {
+                    commit("setCurrentCustomer", res.data);
+                    commit ("setCurrentCustomerLoading", false);
+                    return res;
+                })
+                .catch((err)=>{
+                    commit("setCurrentCustomerLoading", false);
+                    throw err;
+                });
+        },
         saveCustomer({commit}, customer){
             let response;
             if (customer.id) {
                 response = axiosClient
-                .put(`/customer/$(customer.id)`, customer)
+                .put(`/customer/${customer.id}`, customer)
                 .then((res)=>{
                     commit ("updateCustomer", res.data);
                     return res;
@@ -37,6 +48,17 @@ const store = createStore({
                     return res;
                 });
             }
+        },
+        deleteCustomer({}, id){
+            return axiosClient.delete(`/customer/${id}`);
+        },
+        getCustomers({commit}){
+            commit('setCustomersLoading', true)
+            return axiosClient.get("/customer").then((res)=>{
+                commit ('setCustomersLoading', false)
+                commit ("setCustomers", res.data);
+                return res;
+            });
         },
         register({commit}, user){
             return axiosClient.post('/register', user)
@@ -63,6 +85,18 @@ const store = createStore({
         }
     },
     mutations:{
+        setCurrentCustomerLoading: (state, loading) => {
+            state.currentCustomer.loading = loading;
+        },
+        setCustomersLoading: (state, loading) => {
+            state.customers.loading = loading;
+        },
+        setCurrentCustomer: (state, customer) =>{
+            state.currentCustomer.data = customer.data;
+        },
+        setCustomers: (state, customers) => {
+            state.customers.data = customers.data;
+        },
         saveCustomer: (state, customer) => {
             state.customers = [...state.customers, customer.data];
         },

@@ -3,12 +3,24 @@
         <template v-slot:header>
             <div class="flex items-center justify-between">
                 <h1 class="text-3xl font-bold text-gray-900">
-                    {{ model.id ? model.title: "Create a Customer"  }}
+                    {{ route.params.id ? model.first_name: "Create a Customer"  }}
                 </h1>
+
+                <button
+                    v-if="route.params.id"
+                    type="button"
+                    @click="deleteCustomer()"
+                    class="py-2 px-3 text-white bg-red-500 rounded-md hover:bg-red-300"
+                >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 -mt-1 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+</svg>
+                Delete Customer
+                </button>    
             </div>
         </template>
-        
-        <form @submit.prevent="saveCustomer">
+        <div v-if="customerLoading" class="flex justify-center">Loading....</div>
+        <form v-else @submit.prevent="saveCustomer">
             <div class="shadow sm:rounded-md sm:overflow-hidden">
                 <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
                     <!-- first name -->
@@ -140,13 +152,15 @@
 
 <script setup>
 import store from "../store";
-import { ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import PageComponent from "../components/PageComponent.vue";
 
 const router = useRouter();
 
 const route = useRoute();
+
+const customerLoading = computed (() => store.state.currentCustomer.loading)
 
 let model = ref ({
     first_name: "",
@@ -155,10 +169,18 @@ let model = ref ({
     email_address: null,
 });
 
+watch(
+    () =>store.state.currentCustomer.data,
+    (newVal, oldVal)=>{
+        model.value = {
+            ...JSON.parse(JSON.stringify(newVal)),
+            status: newVal.status !== "draft",
+        };
+    }
+);
+
 if (route.params.id) {
-    model.value = store.state.customers.find(
-        (c) => c.id === parseInt(route.params.id)
-    );
+    store.dispatch('getCustomer', route.params.id);
 }
 
 function saveCustomer() {
@@ -169,6 +191,19 @@ function saveCustomer() {
         });
     });
 }
+
+function deleteCustomer() {
+    if (
+        confirm(`Are you really want to delete this customer?`)
+    ) {
+        store.dispatch("deleteCustomer", model.value.id).then(()=>{
+            router.push({
+                name: "Customers",
+            })
+        });
+    }
+}
+
 </script>
 
 <style>
