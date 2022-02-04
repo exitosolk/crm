@@ -43,6 +43,7 @@
                                 border-gray-300
                                 rounded-md
                             "
+                            required=""
                         />   
                     </div>
                     <!-- first name -->
@@ -67,6 +68,7 @@
                                 border-gray-300
                                 rounded-md
                             "
+                            required=""
                         />   
                     </div>
                     <!-- last name -->
@@ -91,6 +93,7 @@
                                 border-gray-300
                                 rounded-md
                             "
+                            required=""
                         />   
                     </div>
                     <!-- phone number -->
@@ -101,7 +104,7 @@
                             Email Address
                         </label>
                         <input
-                            type="text"
+                            type="email"
                             name="email_address"
                             id="email_address"
                             v-model="model.email_address"
@@ -115,6 +118,7 @@
                                 border-gray-300
                                 rounded-md
                             "
+                            required=""
                         />   
                     </div>
                     <!-- email address -->
