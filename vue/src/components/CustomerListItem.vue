@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col py-4 px-6 shadow-md bg-white hover:bg-gray-50 h-[470px]"
+    class="flex flex-col py-4 px-6 shadow-md bg-white hover:bg-gray-50 h-[170px]"
   >
     <h4 class="mt-4 text-lg font-bold">{{ customer.first_name }}</h4>
     <div v-html="customer.phone_number" class="overflow-hidden flex-1"></div>

@@ -29,6 +29,7 @@ class CustomerController extends Controller
      */
     public function store(StoreCustomerRequest $request)
     {
+        
         $result = Customer::create($request->validated());
 
         return new CustomerResource($result);

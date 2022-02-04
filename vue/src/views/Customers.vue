@@ -25,11 +25,9 @@
     <div v-else-if="customers.data.length">
       <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3">
         <CustomerListItem
-          v-for="(customer, ind) in customers.data"
+          v-for="customer in customers.data"
           :key="customer.id"
           :customer="customer"
-          class="opacity-0 animate-fade-in-down"
-          :style="{ animationDelay: `${ind * 0.1}s` }"
           @delete="deleteCustomer(customer)"
         />
       </div>

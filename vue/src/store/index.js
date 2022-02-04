@@ -14,6 +14,7 @@ const store = createStore({
         },
         customers:  {
             loading: false,
+            links: [],
             data:[]
         },
     },
@@ -52,14 +53,15 @@ const store = createStore({
         deleteCustomer({}, id){
             return axiosClient.delete(`/customer/${id}`);
         },
-        getCustomers({commit}){
+        getCustomers({ commit }, {url = null} = {}) {
             commit('setCustomersLoading', true)
-            return axiosClient.get("/customer").then((res)=>{
-                commit ('setCustomersLoading', false)
-                commit ("setCustomers", res.data);
-                return res;
+            url = url || "/customer";
+            return axiosClient.get(url).then((res) => {
+              commit('setCustomersLoading', false)
+              commit("setCustomers", res.data);
+              return res;
             });
-        },
+          },
         register({commit}, user){
             return axiosClient.post('/register', user)
            .then(({data})=>{

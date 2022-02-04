@@ -183,6 +183,8 @@ if (route.params.id) {
     store.dispatch('getCustomer', route.params.id);
 }
 
+let errorMsg = ref('');
+
 function saveCustomer() {
     store.dispatch("saveCustomer", model.value).then(({ data })=>{
         router.push({
